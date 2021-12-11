@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/activity_main.xml" value="0.14" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/bottom_sheet_coin_dialog.xml" value="0.22" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/coin_item.xml" value="0.5" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/coin_list_item.xml" value="0.18526315789473685" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/fragment_cion_dialog_list_dialog.xml" value="0.117578125" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/fragment_cion_dialog_list_dialog_item.xml" value="0.117578125" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/fragment_dashboard.xml" value="0.22" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/fragment_home.xml" value="0.25" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/fragment_item_list_dialog_list_dialog.xml" value="0.117578125" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/fragment_item_list_dialog_list_dialog_item.xml" value="0.117578125" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/fragment_notifications.xml" value="0.128515625" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/test.xml" value="0.9" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/top_coin_item.xml" value="1.0" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/layout/top_coin_list_item.xml" value="0.33" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/CoinLog/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
