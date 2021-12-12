@@ -6,8 +6,8 @@ class Config{
     //https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest/limit
 
     private val BASE_URL = "https://pro-api.coinmarketcap.com"
-    private val LIMIT_TO_COIN = "3"
-    private val LIMIT_COIN = "5"
+    private val LIMIT_TO_COIN = "10"
+    private val LIMIT_COIN = "100"
     private val API_KEY = "1af60f8f-5154-4831-8b12-31a610d895dd"
 
     public fun get_url(): String {

@@ -37,8 +37,7 @@ class CoinListAdapter(private val coinList: ArrayList<Coin>) : RecyclerView.Adap
         holder.binding.info = cryptoListInfo.get(coinList[position].symbol)
         holder.binding.itemClick = myClickHandlers
         holder.binding.favorite = myClickHandlers
-        val imageUrl =
-            cryptoListInfo.get(coinList[position].symbol)?.logo//infos?.metaData?.get(coinList[position].symbol)?.logo
+        val imageUrl = cryptoListInfo.get(coinList[position].symbol)?.logo//infos?.metaData?.get(coinList[position].symbol)?.logo
         imageUrl?.replace("64X64", "200X200")
         holder.binding.imageUrl = imageUrl
         Log.d(TAG, "onBindViewHolder")

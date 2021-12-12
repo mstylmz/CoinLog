@@ -9,5 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="color_low_price">#DD2C00</color>
     <color name="color_good_price">#1FAA00</color>
+    <color name="color_gray">#e0e0e0</color>
 
 </resources>

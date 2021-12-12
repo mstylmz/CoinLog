@@ -4,31 +4,31 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class CoinInfo(
-                @SerializedName("urls")
+    @SerializedName("urls")
                 @Expose
-                val usls: Urls,
-                @SerializedName("logo")
+                val urls: Urls,
+    @SerializedName("logo")
                 @Expose
                 val logo: String,
-                @SerializedName("id")
+    @SerializedName("id")
                 @Expose
                 val id: Int,
-                @SerializedName("name")
+    @SerializedName("name")
                 @Expose
                 val name: String,
-                @SerializedName("symbol")
+    @SerializedName("symbol")
                 @Expose
                 val symbol: String,
-                @SerializedName("slug")
+    @SerializedName("slug")
                 @Expose
                 val slug: String,
-                @SerializedName("description")
+    @SerializedName("description")
                 @Expose
                 val description: String,
-                @SerializedName("tags")
+    @SerializedName("tags")
                 @Expose
                 val tags: List<String>,
-                @SerializedName("category")
+    @SerializedName("category")
                 @Expose
                 val category: String) {
 }

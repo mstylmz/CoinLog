@@ -3,7 +3,6 @@ package com.yilmaz.coinlog.util
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -14,7 +13,6 @@ import com.yilmaz.coinlog.R
 
 @BindingAdapter("profileImage")
 fun ImageView.downloadFromUrl(url: String?){
-
     val option = RequestOptions()
         .placeholder(placeHolderProgressBar(context))
         .error(R.mipmap.ic_launcher_round)
@@ -34,13 +32,11 @@ fun placeHolderProgressBar(context: Context) : CircularProgressDrawable{
 }
 
 @SuppressLint("ResourceAsColor")
-@BindingAdapter("profileChangeTextColor")
+@BindingAdapter("profileCheckTextColor")
 fun setColor(textView: TextView, volume24: Double) {
-
-    Log.d("profileChangeTextColor:",  "$volume24")
-    if(volume24 < 0){
-        Log.d("profileChangeTextColor:",  "change color")
-        textView.setTextColor(Color.parseColor("#DD2C00"))
+    if(volume24 < 0.0){
+        textView.setTextColor(Color.parseColor("#DD2C00")) //red
+    }else{
+        textView.setTextColor(Color.parseColor("#1FAA00")) //green
     }
 }
-
