@@ -1,4 +1,4 @@
-package com.yilmaz.coinlog.ui.dashboard
+package com.yilmaz.coinlog.ui.coinlist
 
 import android.content.Context
 import android.view.LayoutInflater

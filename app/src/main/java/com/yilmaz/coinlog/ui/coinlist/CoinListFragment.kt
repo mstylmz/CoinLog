@@ -1,4 +1,4 @@
-package com.yilmaz.coinlog.ui.dashboard
+package com.yilmaz.coinlog.ui.coinlist
 
 import android.graphics.Color
 import android.os.Bundle
@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yilmaz.coinlog.CoinApplication
 import com.yilmaz.coinlog.R
 import com.yilmaz.coinlog.config.Config
-import com.yilmaz.coinlog.databinding.FragmentDashboardBinding
+import com.yilmaz.coinlog.databinding.FragmentCoinlistBinding
 import com.yilmaz.coinlog.model.models.data_base.FavoriteCoin
 import com.yilmaz.coinlog.model.models.info.CoinInfo
 import com.yilmaz.coinlog.model.models.listing.Coin
@@ -32,10 +32,10 @@ import retrofit2.Response
 import retrofit2.Retrofit
 
 
-class DashboardFragment : Fragment(), CoinListAdapter.ClickListener, FavoriteCoinListAdapter.ClickListener {
-    private val TAG = DashboardFragment::class.java.name
+class CoinListFragment : Fragment(), CoinListAdapter.ClickListener, FavoriteCoinListAdapter.ClickListener {
+    private val TAG = CoinListFragment::class.java.name
 
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentCoinlistBinding? = null
     private val binding get() = _binding!!
     var root: View? = null
     private var config = Config()
@@ -51,13 +51,13 @@ class DashboardFragment : Fragment(), CoinListAdapter.ClickListener, FavoriteCoi
 
     private var coinListInfo =  HashMap<String, CoinInfo>()
 
-    private val viewModel: DashboardViewModel by viewModels {
-        DashboardViewModel.
+    private val viewModel: CoinListViewModel by viewModels {
+        CoinListViewModel.
         DashboardViewModelFactory((activity?.applicationContext as CoinApplication).repository)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentCoinlistBinding.inflate(inflater, container, false)
         root = binding.root
 
         //coin list adapter

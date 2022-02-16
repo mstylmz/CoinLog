@@ -1,4 +1,4 @@
-package com.yilmaz.coinlog.ui.dashboard
+package com.yilmaz.coinlog.ui.coinlist
 
 import androidx.lifecycle.*
 import com.yilmaz.coinlog.model.models.data_base.FavoriteCoin
@@ -7,8 +7,8 @@ import com.yilmaz.coinlog.model.models.listing.CoinList
 import com.yilmaz.coinlog.repository.remote.Repository
 import kotlinx.coroutines.launch
 
-class DashboardViewModel(private val repository: Repository): ViewModel(){
-    private val TAG = DashboardViewModel::class.java.name
+class CoinListViewModel(private val repository: Repository): ViewModel(){
+    private val TAG = CoinListViewModel::class.java.name
 
     /*
     private val _text = MutableLiveData<String>().apply {
@@ -45,9 +45,9 @@ class DashboardViewModel(private val repository: Repository): ViewModel(){
     class DashboardViewModelFactory(private val repository: Repository) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(DashboardViewModel::class.java)) {
+            if (modelClass.isAssignableFrom(CoinListViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return DashboardViewModel(repository) as T
+                return CoinListViewModel(repository) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

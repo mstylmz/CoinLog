@@ -6,7 +6,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.yilmaz.coinlog.databinding.ActivityMainBinding
 import com.yilmaz.coinlog.ui.SectionsPagerAdapter
-import com.yilmaz.coinlog.ui.dashboard.DashboardFragment
+import com.yilmaz.coinlog.ui.coinlist.CoinListFragment
 import com.yilmaz.coinlog.ui.home.HomeFragment
 
 class MainActivity : AppCompatActivity() {
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)*/
 
         val homeFragment = HomeFragment()
-        val dashboardFragment = DashboardFragment()
+        val dashboardFragment = CoinListFragment()
 
         val sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         val viewPager: ViewPager = binding.viewPager

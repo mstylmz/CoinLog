@@ -10,7 +10,7 @@
             type="com.yilmaz.coinlog.model.models.listing.Coin" />
         <variable
             name="itemClick"
-            type="com.yilmaz.coinlog.ui.dashboard.FavoriteCoinListAdapter.ClickHandlers" />
+            type="com.yilmaz.coinlog.ui.coinlist.FavoriteCoinListAdapter.ClickHandlers" />
 
         <variable
             name="imageUrl"
@@ -18,7 +18,7 @@
 
         <variable
             name="favorite"
-            type="com.yilmaz.coinlog.ui.dashboard.FavoriteCoinListAdapter.ClickHandlers" />
+            type="com.yilmaz.coinlog.ui.coinlist.FavoriteCoinListAdapter.ClickHandlers" />
 
         <variable
             name="info"

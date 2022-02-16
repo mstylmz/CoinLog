@@ -7,7 +7,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.dashboard.DashboardFragment">
+        tools:context=".ui.coinlist.CoinListFragment">
 
         <LinearLayout
             android:id="@+id/layoutFavorite"

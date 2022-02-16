@@ -22,9 +22,9 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.yilmaz.coinlog.ui.dashboard.DashboardFragment"
+        android:name="com.yilmaz.coinlog.ui.coinlist.CoinListFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_coinlist" />
 
     <fragment
         android:id="@+id/navigation_notifications"
