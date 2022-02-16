@@ -1,27 +1,39 @@
 package com.yilmaz.coinlog.ui.dashboard
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yilmaz.coinlog.R
 import com.yilmaz.coinlog.databinding.CoinListItemBinding
 import com.yilmaz.coinlog.model.models.info.CoinInfo
-import com.yilmaz.coinlog.model.models.info.Info
 import com.yilmaz.coinlog.model.models.listing.Coin
+import java.util.*
 
 
-class CoinListAdapter(private val coinList: ArrayList<Coin>) : RecyclerView.Adapter<CoinListAdapter.ViewHolder>() {
+class CoinListAdapter(private val coinList: ArrayList<Coin>) : RecyclerView.Adapter<CoinListAdapter.ViewHolder>(), Filterable {
 
     private var TAG = CoinListAdapter::class.java.name
 
-    public lateinit var mListener: ClickListener
+    private lateinit var mListener: ClickListener
     private lateinit var myClickHandlers: MyClickHandlers
 
     private val cryptoListInfo =  HashMap<String, CoinInfo>()
+
+    var coinListFiltered = ArrayList<Coin>()
+    var coinListFilteredFavoriteStatus = HashMap<String, Boolean>()
+
+    init {
+        coinListFiltered = coinList
+
+        //set all false
+        for(coin in coinListFiltered)
+            coinListFilteredFavoriteStatus[coin.symbol] = false
+    }
 
     fun setOnItemClickListener(listener:ClickListener){
         mListener = listener
@@ -29,18 +41,19 @@ class CoinListAdapter(private val coinList: ArrayList<Coin>) : RecyclerView.Adap
 
     interface ClickListener {
         fun itemClickListener(coin:Coin, info: CoinInfo)
-        fun itemFavoriteClickListener(coin:Coin)
+        fun itemFavoriteClickListener(coin:Coin, position: Int)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.coin = coinList[position]
-        holder.binding.info = cryptoListInfo.get(coinList[position].symbol)
+        holder.binding.coin = coinListFiltered[position]
+        holder.binding.info = cryptoListInfo.get(coinListFiltered[position].symbol)
         holder.binding.itemClick = myClickHandlers
         holder.binding.favorite = myClickHandlers
-        val imageUrl = cryptoListInfo.get(coinList[position].symbol)?.logo//infos?.metaData?.get(coinList[position].symbol)?.logo
+        holder.binding.position = position
+        val imageUrl = cryptoListInfo.get(coinListFiltered[position].symbol)?.logo
         imageUrl?.replace("64X64", "200X200")
         holder.binding.imageUrl = imageUrl
-        Log.d(TAG, "onBindViewHolder")
+        holder.binding.favoriteStatus = coinListFilteredFavoriteStatus.get(coinListFiltered[position].symbol)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -70,8 +83,8 @@ class CoinListAdapter(private val coinList: ArrayList<Coin>) : RecyclerView.Adap
             listener?.itemClickListener(coin, info)
         }
 
-        fun favoriteClick(view: View?, coin: Coin) {
-            listener?.itemFavoriteClickListener(coin)
+        fun favoriteClick(view: View?, coin: Coin, position: Int) {
+            listener?.itemFavoriteClickListener(coin, position)
         }
 
         fun onButtonLongPressed(view: View?): Boolean {
@@ -80,7 +93,7 @@ class CoinListAdapter(private val coinList: ArrayList<Coin>) : RecyclerView.Adap
     }
 
     override fun getItemCount(): Int {
-        return coinList.size
+        return coinListFiltered.size
     }
 
     fun updateCoinList(newList: ArrayList<Coin>){
@@ -88,9 +101,50 @@ class CoinListAdapter(private val coinList: ArrayList<Coin>) : RecyclerView.Adap
         coinList.addAll(newList)
     }
 
-    fun setInfos(t: Info){
-        cryptoListInfo.putAll(t.metaData)
+    fun setInfos(metadata: HashMap<String, CoinInfo>){
+        cryptoListInfo.putAll(metadata)
         notifyDataSetChanged()
     }
 
+    fun setCryptoFavoriteStatus(favoriteCoin: Coin, position: Int, status: Boolean){
+        coinListFilteredFavoriteStatus[favoriteCoin.symbol] = status
+        notifyItemChanged(position)
+    }
+
+    fun setCryptoFavoriteStatus(favoriteCoin: Coin, status: Boolean){
+        coinListFilteredFavoriteStatus[favoriteCoin.symbol] = status
+        notifyDataSetChanged()
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter(){
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charSearch = constraint.toString()
+                if (charSearch.isEmpty()) {
+                    coinListFiltered = coinList
+                }
+                val resultList = ArrayList<Coin>()
+                for(row in coinList){
+                    var coin_name = row.name
+                    var coin_symbol = row.symbol
+                    if (coin_name.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))
+                        || coin_symbol.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(
+                            Locale.ROOT)))
+                    {
+                        resultList.add(row)
+                    }
+                    coinListFiltered = resultList
+                }
+                val filterResults = FilterResults()
+                filterResults.values = coinListFiltered
+                return filterResults
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                coinListFiltered = results?.values as ArrayList<Coin>
+                notifyDataSetChanged()
+            }
+        }
+    }
 }

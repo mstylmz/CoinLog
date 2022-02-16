@@ -41,4 +41,5 @@ data class Coin(
                 @Expose
                 var quote: Quote
                 ) {
+
 }

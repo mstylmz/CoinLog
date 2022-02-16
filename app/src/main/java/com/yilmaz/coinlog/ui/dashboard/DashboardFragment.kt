@@ -1,69 +1,106 @@
 package com.yilmaz.coinlog.ui.dashboard
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.yilmaz.coinlog.CoinApplication
 import com.yilmaz.coinlog.R
 import com.yilmaz.coinlog.config.Config
-import com.yilmaz.coinlog.databinding.BottomSheetCoinDialogBinding
 import com.yilmaz.coinlog.databinding.FragmentDashboardBinding
+import com.yilmaz.coinlog.model.models.data_base.FavoriteCoin
 import com.yilmaz.coinlog.model.models.info.CoinInfo
 import com.yilmaz.coinlog.model.models.listing.Coin
+import com.yilmaz.coinlog.service.remote.NewsService
+import com.yilmaz.coinlog.ui.detail.BottomSheetCoin
+import me.toptas.rssconverter.RssConverterFactory
+import me.toptas.rssconverter.RssFeed
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 
-class DashboardFragment : Fragment(), CoinListAdapter.ClickListener {
+class DashboardFragment : Fragment(), CoinListAdapter.ClickListener, FavoriteCoinListAdapter.ClickListener {
     private val TAG = DashboardFragment::class.java.name
 
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
-    private var dashboardViewModel = DashboardViewModel()
     var root: View? = null
     private var config = Config()
+    //private lateinit var viewModel: DashboardViewModel
+    private var favoriteClickStatus = false
 
-    private lateinit var myClickHandlers: MyClickHandlers
+    private var coinList = ArrayList<Coin>()                    //CoinListAdapterd
+    var adapter:CoinListAdapter? = null
+
+    private var coinListFavorite = ArrayList<Coin>()            //FavoriteCoinListAdapter
+    private var favoriteCoinDatabase = ArrayList<FavoriteCoin>() //from database
+    var adapter_favorite_coin: FavoriteCoinListAdapter ? = null
+
+    private var coinListInfo =  HashMap<String, CoinInfo>()
+
+    private val viewModel: DashboardViewModel by viewModels {
+        DashboardViewModel.
+        DashboardViewModelFactory((activity?.applicationContext as CoinApplication).repository)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        dashboardViewModel = ViewModelProvider(this).get(DashboardViewModel::class.java)
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         root = binding.root
-        //adapter
-        val adapter = CoinListAdapter(arrayListOf())
+
+        //coin list adapter
+        adapter = CoinListAdapter(arrayListOf())
         val recyclerView = binding.coinList
         recyclerView.adapter = adapter
-        adapter.setOnItemClickListener(this)
+        adapter!!.setOnItemClickListener(this)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
+
+        //favorite coin list adapter
+        adapter_favorite_coin = FavoriteCoinListAdapter(arrayListOf())
+        val recyclerViewFavorite = binding.coinListFavorite
+        recyclerViewFavorite.adapter = adapter_favorite_coin
+        adapter_favorite_coin!!.setOnItemClickListener(this)
+        recyclerViewFavorite.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
+
         val refreshView: ProgressBar = binding.progressBarRefresh
 
-        dashboardViewModel.init()
+        val searchIcon = binding.coinSearch.findViewById<ImageView>(androidx.appcompat.R.id.search_mag_icon)
+        searchIcon.setColorFilter(Color.BLACK)
 
-        dashboardViewModel.getCoinLatest()?.observe(viewLifecycleOwner){
-            it.coin.forEach(System.out::println)
-            adapter.updateCoinList(it.coin as ArrayList<Coin>)
+        val cancelIcon = binding.coinSearch.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
+        cancelIcon.setColorFilter(Color.BLACK)
+
+        val textView = binding.coinSearch.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
+        textView.setTextColor(Color.BLACK)
+        textView.hint = "Search"
+
+        viewModel.allMeteData.observe(viewLifecycleOwner){ info ->
+            coinListInfo.putAll(info.metaData)
+            adapter!!.setInfos(coinListInfo)
         }
-        dashboardViewModel.getCoinsMetaData()?.observe(viewLifecycleOwner){
-            adapter.setInfos(it)
-        }
-        dashboardViewModel.getRefreshStatus()?.observe(viewLifecycleOwner){
-            Log.d(TAG,"refresh $it")
+
+        viewModel.downloading.observe(viewLifecycleOwner){
+            Log.d(TAG,"downloading $it")
             if(!it)
                 refreshView.visibility = View.VISIBLE
             else
                 refreshView.visibility = View.GONE
+
         }
-        dashboardViewModel.getRefreshError()?.observe(viewLifecycleOwner){
+
+        viewModel.downloadingError.observe(viewLifecycleOwner){
             if(!it.equals("NO_ERROR")){
                 refreshView.visibility = View.GONE
                 val toast = Toast.makeText(context, "$it ERROR", Toast.LENGTH_LONG)
@@ -72,71 +109,149 @@ class DashboardFragment : Fragment(), CoinListAdapter.ClickListener {
             }
         }
 
+        //OBSERVER REMOTE COIN LIST - FROM CMC
+        viewModel.allCoins.observe(viewLifecycleOwner){
+            coinList = it.coin as ArrayList<Coin>
+            adapter!!.updateCoinList(coinList)
+        }
+
+        //OBSERVER FAVORITE COINS - FROM DATABASE
+        viewModel.allFavoriteCoin.observe(viewLifecycleOwner){
+                favoriteCoinDatabase.clear()
+                favoriteCoinDatabase = it as ArrayList<FavoriteCoin>
+                updateFavoriteCoinList()
+        }
+
+        //TOGGLE FAVORITE CLICK
+        binding.layoutFavorite.setOnClickListener(){
+            favoriteClickStatus = !favoriteClickStatus
+            if(favoriteClickStatus){
+                showFavoriteCoinList()
+            }else{
+                showCoinList()
+            }
+        }
+
+        binding.coinSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                TODO("Not yet implemented")
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter!!.filter.filter(newText)
+                adapter_favorite_coin!!.filter.filter(newText)
+                return false
+            }
+        })
+
+        //fetchRss()
         return root as View
+    }
+
+    private fun fetchRss() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://github.com")
+            .addConverterFactory(RssConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(NewsService::class.java)
+
+            service.getNews(config.get_news_url())
+                .enqueue(object : Callback<RssFeed> {
+                    override fun onResponse(call: Call<RssFeed>, response: Response<RssFeed>) {
+
+                        Log.d(TAG, "onResponse: ${response.isSuccessful}")
+                        Log.d(TAG, "onResponse: ${response.body()!!.items}")
+
+                    }
+
+                    override fun onFailure(call: Call<RssFeed>, t: Throwable) {
+                        Toast.makeText(binding.root.context, "Failed to fetchRss RSS feed!", Toast.LENGTH_SHORT).show()
+                    }
+                })
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dashboardViewModel.refreshCoinLatest(config.get_coin_limit())
+        viewModel.refreshCoinLatest(config.get_coin_limit())
+    }
+
+    override fun itemClickListener(coin: Coin, info: CoinInfo) {
+        val bottomSheetFragment: BottomSheetCoin = BottomSheetCoin.newInstance(coin, info)
+        bottomSheetFragment.show(
+            parentFragmentManager,
+            "bottomsheet_coin"
+        )
+    }
+
+    private fun showFavoriteCoinList(){
+        binding.layoutFavorite.setBackgroundResource(R.drawable.favorite_view_on_rounded_corner)
+        binding.imageViewShowFavorite.setBackgroundResource(R.drawable.favorite_on)
+        binding.coinList.visibility = View.INVISIBLE
+        binding.coinListFavorite.visibility = View.VISIBLE
+        if(coinListFavorite.isEmpty()){
+            binding.txtCoinListFavoriteInfo.visibility = View.VISIBLE
+        }else{
+            binding.txtCoinListFavoriteInfo.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun showCoinList() {
+        binding.layoutFavorite.setBackgroundResource(R.drawable.favorite_view_off_rounded_corner)
+        binding.imageViewShowFavorite.setBackgroundResource(R.drawable.favorite_off)
+        binding.coinListFavorite.visibility = View.INVISIBLE
+        binding.coinList.visibility = View.VISIBLE
+        binding.txtCoinListFavoriteInfo.visibility = View.INVISIBLE
+    }
+
+    private fun updateFavoriteCoinList(){
+        coinListFavorite.clear()
+        for(coin in coinList){
+            for(favorite in favoriteCoinDatabase){
+                if(coin.symbol.equals(favorite.symbol)){
+                    Log.d(TAG, "added to coinListFavorite -> ${coin.symbol}")
+                    coinListFavorite.add(coin)
+                }
+            }
+        }
+        adapter_favorite_coin!!.update_list(coinListFavorite)
+        adapter_favorite_coin!!.setInfos(coinListInfo)
+    }
+
+    //COINLIST ADAPTER FAVORITE
+    override fun itemFavoriteClickListener(coin: Coin, position: Int) {
+        var favoriteCoin = FavoriteCoin(0, coin.name, coin.symbol)
+        var deleteStatus = false
+        for (favoriteDatabase in favoriteCoinDatabase){
+            if(favoriteDatabase.symbol == favoriteCoin.symbol){
+                deleteStatus = true
+                adapter!!.setCryptoFavoriteStatus(coin, position, false)
+                viewModel.delete(favoriteDatabase)
+                Log.d(TAG, "delete $favoriteDatabase")
+            }
+        }
+
+        if(!deleteStatus){
+            Log.d(TAG, "insert $favoriteCoin")
+            adapter!!.setCryptoFavoriteStatus(coin, position, true)
+            viewModel.insert(favoriteCoin)
+        }
+    }
+
+    //FAVORITECOIN ADAPTER FAVORI CLICK
+    override fun itemFavoriteAdapterClickListener(coin: Coin, position:Int) {
+        for(favorite in favoriteCoinDatabase){
+            if(favorite.symbol == coin.symbol){
+                viewModel.delete(favorite)
+                Log.d(TAG, "delete $favorite")
+            }
+        }
+        adapter_favorite_coin?.remove(position)
+        adapter!!.setCryptoFavoriteStatus(coin, false)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-
-    override fun itemClickListener(coin: Coin, info: CoinInfo) {
-        Log.d(TAG, "onButtonClick $coin")
-        Log.d(TAG, "onButtonClick $info")
-
-        /*
-        bottomSheetDialog = BottomSheetDialog(root!!.context)
-        val view = layoutInflater.inflate(R.layout.bottom_sheet_coin_dialog, null)
-        bottomSheetDialog!!.setContentView(view)
-        bottomSheetDialog!!.show()*/
-        val inflater = LayoutInflater.from(root!!.context)
-        val binding = DataBindingUtil.inflate<BottomSheetCoinDialogBinding>(inflater,R.layout.bottom_sheet_coin_dialog,
-            root as ViewGroup?, false)
-
-        myClickHandlers = MyClickHandlers(binding.root.context)
-        binding.coin  = coin
-        binding.info = info
-        binding.click = myClickHandlers
-
-        if (!coin.max_supply.equals(0.0) && !coin.circulating_supply.equals(0.0)){
-            val circulating_percent = (coin.circulating_supply/coin.max_supply) * 100
-            binding.percentCirculatingSupply = String.format("%,.1f", circulating_percent) + "%"
-        }else{
-            binding.percentCirculatingSupply = "Unknown %"
-        }
-
-        val bottomSheetDialog = BottomSheetDialog(inflater.context)
-        bottomSheetDialog.setContentView(binding.root)
-        bottomSheetDialog.show()
-    }
-
-
-    //click event for bottom sheet dialog
-    class MyClickHandlers(context: Context) {
-        private val TAG = MyClickHandlers::class.java.name
-        var context: Context
-        init {
-            this.context = context
-        }
-
-        fun openWebSite(url: String?) {
-            if(url != null && url != ""){
-                val openURL = Intent(Intent.ACTION_VIEW)
-                openURL.data = Uri.parse(url)
-                context.startActivity(openURL)
-            }else{
-                Toast.makeText(context, "Link not found", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    override fun itemFavoriteClickListener(coin: Coin) {
-        Log.d(TAG, "favoriteClick $coin")
     }
 }

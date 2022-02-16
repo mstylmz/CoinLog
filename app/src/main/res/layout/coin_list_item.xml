@@ -24,11 +24,20 @@
             name="info"
             type="com.yilmaz.coinlog.model.models.info.CoinInfo" />
 
+        <variable
+            name="favoriteStatus"
+            type="Boolean" />
+
+        <variable
+            name="position"
+            type="Integer" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:background="@drawable/constrait_rounded_corner"
         android:clickable="true"
         android:onClick="@{(v) -> itemClick.onButtonClick(v,coin, info)}">
 
@@ -95,38 +104,28 @@
             app:layout_constraintEnd_toEndOf="@+id/coinPrice_"
             app:layout_constraintTop_toTopOf="@+id/coinSymbol_" />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:text="_____________________________________________"
-            android:textSize="8sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <ImageView
             android:id="@+id/imageViewFavorite"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginBottom="28dp"
             android:clickable="true"
-            android:onClick="@{(v) -> favorite.favoriteClick(v,coin)}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:onClick="@{(v) -> favorite.favoriteClick(v,coin, position)}"
+            app:layout_constraintBottom_toBottomOf="@+id/coinMCapPrice_"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@android:drawable/btn_star_big_off" />
+            app:layout_constraintTop_toTopOf="@+id/coinPrice_"
+            app:profileSetBackgroundFavorite = "@{favoriteStatus}"
+            app:srcCompat="@drawable/favorite_off" />
 
         <TextView
             android:id="@+id/txtVolume24h"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='@{String.format("%,.2f", coin.quote.usd.percentChange24h) + `%`}'
             android:layout_marginStart="10dp"
-            app:profileCheckTextColor="@{coin.quote.usd.percentChange24h}"
+            android:text='@{String.format("%,.2f", coin.quote.usd.percentChange24h) + `%`}'
             app:layout_constraintBottom_toBottomOf="@+id/coinSymbol_"
             app:layout_constraintStart_toEndOf="@+id/coinSymbol_"
-            app:layout_constraintTop_toTopOf="@+id/coinSymbol_" />
+            app:layout_constraintTop_toTopOf="@+id/coinSymbol_"
+            app:profileCheckTextColor="@{coin.quote.usd.percentChange24h}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

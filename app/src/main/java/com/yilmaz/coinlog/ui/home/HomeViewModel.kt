@@ -1,55 +1,36 @@
 package com.yilmaz.coinlog.ui.home
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.yilmaz.coinlog.model.models.info.Info
-import com.yilmaz.coinlog.model.models.listing.Coin
-import com.yilmaz.coinlog.repository.CoinRepository
+import com.yilmaz.coinlog.model.models.listing.CoinList
+import com.yilmaz.coinlog.repository.remote.Repository
+import me.toptas.rssconverter.RssFeed
 
-class HomeViewModel : ViewModel() {
-
-
+class HomeViewModel(private val repository: Repository) : ViewModel() {
     private val TAG = HomeViewModel::class.java.name
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
-    }
-    val text: LiveData<String> = _text
+    fun getLatestNews() = repository.getLatestNews()
 
-    private var topCoinList: MutableLiveData<ArrayList<Coin>>? = null
-    private var refresh:MutableLiveData<Boolean>? = null
-    private var mRepo = CoinRepository()
-    private var coinsMetaData: MutableLiveData<Info>? = null
+    val topCoins: MutableLiveData<CoinList> = repository.allCoins
 
+    val allMeteData: MutableLiveData<Info> = repository.allMetaData
 
-    fun init()
-    {
-        if(topCoinList != null)
-        {
-            return
+    val downloading: MutableLiveData<Boolean> = repository.downloading
+
+    val downloadingError: MutableLiveData<String> = repository.downloadingError
+
+    val news_list: MutableLiveData<RssFeed> = repository.news_list
+
+    class HomeViewModelFactory(private val repository: Repository) :
+        ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return HomeViewModel(repository) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
-        mRepo = CoinRepository().getInstance()
-        topCoinList = mRepo.getTopCoinList()
-        refresh = mRepo.getRefreshStatus()
-        coinsMetaData = mRepo.getCoinsMetaData()
-    }
-
-    fun refreshCoinLatest(limit:String){
-        mRepo.getCoinLatestFromCmc(limit)
-    }
-
-    fun getRefreshStatus() : MutableLiveData<Boolean>? {
-        return refresh
-    }
-
-    fun getTopCoinList(): MutableLiveData<ArrayList<Coin>>? {
-        Log.d(TAG, "getTopCoinList")
-        return  topCoinList
-    }
-
-    fun getCoinsMetaData(): MutableLiveData<Info>? {
-        return coinsMetaData
     }
 }

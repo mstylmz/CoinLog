@@ -8,7 +8,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yilmaz.coinlog.R
 import com.yilmaz.coinlog.databinding.TopCoinListItemBinding
-import com.yilmaz.coinlog.model.models.info.CoinInfo
 import com.yilmaz.coinlog.model.models.info.Info
 import com.yilmaz.coinlog.model.models.listing.Coin
 

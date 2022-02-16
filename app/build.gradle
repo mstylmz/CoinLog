@@ -127,4 +127,13 @@ dependencies {
     //Scalable Size Unit (Support for different screen size)
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
+
+    //ROUNDED IMAGE VIEW
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    //RSS
+    implementation 'com.github.faruktoptas:RetrofitRssConverterFactory:0.1.0'
+
+    //newsapi.org
+    implementation 'com.github.dfloureiro:news-api-kotlin:v2.1'
 }

@@ -6,8 +6,8 @@
 
     <!-- we define border color and thick -->
     <stroke
-        android:width="1dp"
-        android:color="@color/black" />
+        android:width="0.5dp"
+        android:color="@color/colorPrimary" />
 
     <!-- add some padding for text inside -->
     <padding
@@ -17,6 +17,6 @@
         android:top="5dp" />
 
     <!-- we define corner radius, note that radius can be different for each corner -->
-    <corners android:radius="10dp" />
+    <corners android:radius="0dp" />
 
 </shape>

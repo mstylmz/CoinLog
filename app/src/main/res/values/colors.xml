@@ -11,4 +11,9 @@
     <color name="color_good_price">#1FAA00</color>
     <color name="color_gray">#e0e0e0</color>
 
+    <color name="colorPrimary">#0277bd</color>
+    <color name="colorPrimaryDark">#004c8c</color>
+    <color name="colorPrimaryLight">#58a5f0</color>
+    <color name="colorAccent">#6ab7ff</color>
+
 </resources>

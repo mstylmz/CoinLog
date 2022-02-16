@@ -1,61 +1,55 @@
 package com.yilmaz.coinlog.ui.dashboard
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.yilmaz.coinlog.model.models.data_base.FavoriteCoin
 import com.yilmaz.coinlog.model.models.info.Info
 import com.yilmaz.coinlog.model.models.listing.CoinList
-import com.yilmaz.coinlog.repository.CoinRepository
+import com.yilmaz.coinlog.repository.remote.Repository
+import kotlinx.coroutines.launch
 
-class DashboardViewModel : ViewModel() {
-
+class DashboardViewModel(private val repository: Repository): ViewModel(){
     private val TAG = DashboardViewModel::class.java.name
 
+    /*
     private val _text = MutableLiveData<String>().apply {
         value = "This is dashboard Fragment"
     }
     val text: LiveData<String> = _text
+    */
 
-    private var coinList: MutableLiveData<CoinList>? = null
-    private var topCoinList: MutableLiveData<CoinList>? = null
-    private var refresh:MutableLiveData<Boolean>? = null
-    private var refresh_error:MutableLiveData<String>? = null
-    private var coinsMetaData: MutableLiveData<Info>? = null
+    var liveDataMerger = MediatorLiveData<List<FavoriteCoin>>()
 
-    private var mRepo =  CoinRepository()
 
-    fun init() {
-        if(coinList != null){
-            return
+    fun refreshCoinLatest(limit:String) = repository.getCoinLatestFromCmc(limit)
+
+    val allCoins: MutableLiveData<CoinList> = repository.allCoins
+
+    val allMeteData: MutableLiveData<Info> = repository.allMetaData
+
+    val downloading: MutableLiveData<Boolean> = repository.downloading
+
+    val downloadingError: MutableLiveData<String> = repository.downloadingError
+
+    //DATABASE FUNCTIONS
+    val allFavoriteCoin: LiveData<List<FavoriteCoin>> = repository.allFavoriteCoin.asLiveData()
+
+    fun insert(coin: FavoriteCoin) = viewModelScope.launch{
+        repository.insert(coin)
+    }
+
+    fun delete(coin: FavoriteCoin) = viewModelScope.launch{
+        repository.delete(coin)
+    }
+
+        //FACTORY
+    class DashboardViewModelFactory(private val repository: Repository) :
+        ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(DashboardViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return DashboardViewModel(repository) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
-        Log.d(TAG, "init")
-        mRepo = CoinRepository().getInstance()
-        coinList = mRepo.getCoinLatest()
-        refresh = mRepo.getRefreshStatus()
-        refresh_error = mRepo.getRefreshError()
-        coinsMetaData = mRepo.getCoinsMetaData()
     }
-
-    fun refreshCoinLatest(limit:String){
-        mRepo.getCoinLatestFromCmc(limit)
-    }
-
-    fun getCoinLatest(): MutableLiveData<CoinList>? {
-        Log.d(TAG, "getCoinLatest")
-        return coinList
-    }
-
-    fun getRefreshStatus() : MutableLiveData<Boolean>? {
-        return refresh
-    }
-
-    fun getRefreshError() : MutableLiveData<String>?{
-        return refresh_error
-    }
-
-    fun getCoinsMetaData(): MutableLiveData<Info>? {
-        return coinsMetaData
-    }
-
 }

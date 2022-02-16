@@ -11,12 +11,10 @@ class SectionsPagerAdapter(fm: FragmentManager) :
     private val fragments = ArrayList<Fragment>()
     private val fragmentTitle = ArrayList<String>()
 
-
     fun addFragment(fragment: Fragment, title: String) {
         fragments.add(fragment)
         fragmentTitle.add(title)
     }
-
 
     override fun getItem(position: Int): Fragment {
         return fragments[position]
@@ -29,7 +27,6 @@ class SectionsPagerAdapter(fm: FragmentManager) :
     override fun getCount(): Int {
         return fragments.size
     }
-
 
     override fun getPageTitle(position: Int): CharSequence {
         return fragmentTitle[position]

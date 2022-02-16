@@ -1,4 +1,4 @@
-package com.yilmaz.coinlog.service
+package com.yilmaz.coinlog.service.remote
 
 import com.yilmaz.coinlog.model.models.info.Info
 import com.yilmaz.coinlog.model.models.listing.CoinList
