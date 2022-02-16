@@ -40,5 +40,9 @@ Define your own api key to the API_KEY variable in the config file.
 
 You can define the maximum number of coins to be taken with the LIMIT_COIN variable.
 
+# Android Studio version
+
+Chipmunk 2021.2.1 Canary 5
+
 
 
