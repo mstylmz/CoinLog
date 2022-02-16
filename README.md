@@ -20,9 +20,7 @@ Kotlin Extension
 Room
 Data Binding
 
-For asynchronous programming;
-Kolin coroutines
-Rx Java
+U used Kotlin coroutines and Rx Java For asynchronous programming 
 
 I used Retrofit library for Network process.
 
