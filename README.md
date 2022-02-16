@@ -10,7 +10,7 @@ It is written entirely in the Kotlin programming language.
 
 # Technologies I have used
 
-Developed with mvvm architecture
+Developed with MVVM architecture.
 
 Architectural components I have used;
 Lifecycle
@@ -20,12 +20,18 @@ Kotlin Extension
 Room
 Data Binding
 
-U used Kotlin coroutines and Rx Java For asynchronous programming 
+U used Kotlin coroutines and Rx Java For asynchronous programming.
 
 I used Retrofit library for Network process.
 
-I used glide library for  media management and image loading framework
+I used glide library for  media management and image loading framework.
 https://github.com/bumptech/glide
+
+I used manual method for dependency injection.
+
+I used RecyclerView library for cryptocurrency listing.
+
+I used Gson library for object transformations
 
 # Usage
 
