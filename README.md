@@ -21,7 +21,7 @@ Architectural components I have used;
 - Room
 - Data Binding
 
-U used Kotlin coroutines and Rx Java For asynchronous programming.
+I used Kotlin coroutines and Rx Java For asynchronous programming.
 
 I used Retrofit library for Network process.
 
