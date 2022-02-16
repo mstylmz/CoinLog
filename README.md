@@ -1,6 +1,6 @@
 # CoinLog
 
-A simple app to track cryptocurrencies.
+A app to track cryptocurrencies.
 
 It gets its crypto currency information from the coinmarketcap site.
 
