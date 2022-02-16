@@ -13,12 +13,13 @@ It is written entirely in the Kotlin programming language.
 Developed with MVVM architecture.
 
 Architectural components I have used;
-Lifecycle
-ViewModel
-LiveData
-Kotlin Extension
-Room
-Data Binding
+
+- Lifecycle
+- ViewModel
+- LiveData
+- Kotlin Extension
+- Room
+- Data Binding
 
 U used Kotlin coroutines and Rx Java For asynchronous programming.
 
