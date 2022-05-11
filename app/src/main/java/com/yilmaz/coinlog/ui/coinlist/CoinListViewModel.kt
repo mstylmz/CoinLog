@@ -19,7 +19,6 @@ class CoinListViewModel(private val repository: Repository): ViewModel(){
 
     var liveDataMerger = MediatorLiveData<List<FavoriteCoin>>()
 
-
     fun refreshCoinLatest(limit:String) = repository.getCoinLatestFromCmc(limit)
 
     val allCoins: MutableLiveData<CoinList> = repository.allCoins

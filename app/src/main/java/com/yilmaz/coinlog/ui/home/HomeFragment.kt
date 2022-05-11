@@ -41,8 +41,7 @@ class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels {
         HomeViewModel.
-        HomeViewModelFactory((activity?.applicationContext as CoinApplication).repository
-        )
+        HomeViewModelFactory((activity?.applicationContext as CoinApplication).repository)
     }
 
     override fun onCreateView(
@@ -59,7 +58,6 @@ class HomeFragment : Fragment() {
         top_coin_list.setHasFixedSize(true)
         top_coin_list.adapter = top_coin_adapter
         top_coin_list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
-
 
 
         //NEWS DASHBOARD

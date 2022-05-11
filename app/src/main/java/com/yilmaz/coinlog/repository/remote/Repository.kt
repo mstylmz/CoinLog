@@ -22,7 +22,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 
-class Repository(private val cmcApiClient: Retrofit, private val favoriteCoinsDao: FavoriteCoinsDao, private val newsApiClient: Retrofit) {
+class Repository(private val cmcApiClient: Retrofit,
+                 private val favoriteCoinsDao: FavoriteCoinsDao,
+                 private val newsApiClient: Retrofit) {
     private val TAG = Repository::class.java.name
 
     private var config = Config()

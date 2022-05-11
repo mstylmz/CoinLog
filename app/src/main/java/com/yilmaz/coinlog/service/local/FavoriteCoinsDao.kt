@@ -24,8 +24,8 @@ interface FavoriteCoinsDao {
     @Insert
     suspend fun insertAll(vararg coins: FavoriteCoin): List<Long>
 
-    @Query("SELECT * FROM favorite_coins WHERE uuid = :coin_id")
-    suspend fun getCoins(coin_id:Int): FavoriteCoin
+    @Query("SELECT * FROM favorite_coins WHERE uuid = :id")
+    suspend fun getCoins(id:Int): FavoriteCoin
 
     @Query("DELETE FROM favorite_coins")
     suspend fun deleteAllCoins()

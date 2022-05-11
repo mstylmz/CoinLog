@@ -1,6 +1,8 @@
 package com.yilmaz.coinlog.service.local
 
 import android.content.Context
+import android.util.Log
+import androidx.annotation.WorkerThread
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -40,13 +42,21 @@ abstract class FavoriteCoinDatabase: RoomDatabase() {
                 super.onCreate(db)
                 INSTANCE?.let { database ->
                     scope.launch(Dispatchers.IO) {
+                        Log.d("FavoriteCoinDatabase", "onCreate: ")
+
                         populateDatabase(database.coinDao())
                     }
                 }
             }
         }
 
+        @Suppress("RedundantSuspendModifier")
+        @WorkerThread
         suspend fun populateDatabase(dao: FavoriteCoinsDao) {
+            Log.d("FavoriteCoinDatabase", "populateDatabase: ")
+
+            val coin = FavoriteCoin(1000, "XCoin", "X")
+            dao.insert(coin)
             // Start the app with a clean database every time.
             // Not needed if you only populate on creation.
 
